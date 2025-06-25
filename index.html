@@ -100,6 +100,7 @@
             backdrop-filter: blur(6px);
             position: relative;
             z-index: 1;
+            overflow: visible; /* Allows child elements (like toggle button) to stick out */
         }
 
         /* Class for cards that will have the subtle flame effect */
@@ -230,7 +231,15 @@
         .hp-bar-container { background-color: var(--black-transparent); border: 1px solid var(--border-gold); border-radius: 5px; padding: 2px; }
         #hpBar { background: linear-gradient(to right, var(--hp-gradient-start), var(--hp-gradient-end)); height: 20px; border-radius: 3px; transition: width 0.5s ease-in-out; text-shadow: 1px 1px 2px #000; }
 
-        .death-save { width: 0.8rem; height: 0.8rem; border: 1px solid var(--border-gold); border-radius: 50%; cursor: pointer; transition: all 0.2s; }
+        /* Aumentado o tamanho dos death saves para melhor clique em mobile */
+        .death-save { 
+            width: 1.5rem; /* Aumentado */
+            height: 1.5rem; /* Aumentado */
+            border: 1px solid var(--border-gold); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
         .death-save.success.checked { background-color: var(--green-success); border-color: var(--green-success); box-shadow: 0 0 8px var(--green-success); }
         .death-save.failure.checked { background-color: var(--red-failure); border-color: var(--red-failure); box-shadow: 0 0 8px var(--red-failure); }
 
@@ -242,10 +251,12 @@
             cursor: pointer;
             transition: all 0.2s;
             justify-self: center;
+            opacity: 0.4; /* Make them less prominent when not toggled */
         }
         .advantage-dot.toggled {
             background-color: var(--gold-glow);
             box-shadow: 0 0 5px var(--gold-glow);
+            opacity: 1; /* Full opacity when toggled */
         }
 
         .proficiency-dot {
@@ -256,11 +267,13 @@
             cursor: pointer;
             transition: all 0.2s;
             justify-self: center;
+            opacity: 0.4; /* Make them less prominent when not toggled */
         }
         .proficiency-dot.toggled {
             background-color: var(--text-primary);
             box-shadow: 0 0 8px var(--text-primary);
             border-color: var(--text-primary);
+            opacity: 1; /* Full opacity when toggled */
         }
 
         .modal {
@@ -487,44 +500,6 @@
         }
         .spell-modal-tab-content.active {
             display: block;
-        }
-
-        /* Initiative and Proficiency card styling */
-        #initiative-proficiency-card {
-            background-color: var(--bg-dark-transparent);
-            border: 1px solid var(--border-gold);
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-            backdrop-filter: blur(5px);
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        #initiative-proficiency-card .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #initiative-proficiency-card .stat-label {
-            font-size: 1.2rem;
-            color: var(--gold-glow);
-            margin-bottom: 0.25rem;
-        }
-        #initiative-proficiency-card .stat-value-large {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--gold-glow);
-            text-shadow: 0 0 5px var(--gold-glow);
-        }
-        #initiative-proficiency-card .stat-value-small {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--text-primary);
-            text-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
 
         /* Music Player Styling */
@@ -780,7 +755,7 @@
             height: 160px; /* Imagem ainda maior no modal de detalhes */
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid var(--border-gold);
+            border: 2px solid var(--gold-glow);
             cursor: pointer; /* Indica que a imagem é clicável */
         }
         /* Corrigido: Removido gothic-card do #item-detail-notes para evitar brilho cortado */
@@ -914,12 +889,116 @@
             border-color: var(--red-failure);
             box-shadow: 0 0 10px var(--red-failure);
         }
+
+        /* Styling for the collapsible quick access bar */
+        /* The main container now also serves as the gothic-card */
+        #global-quick-access-container {
+            /* Inherits gothic-card styles */
+            position: fixed;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            width: 95%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column; /* Stack vertically */
+            align-items: center;
+            padding: 0; /* Remove default padding for internal control */
+            transition: all 0.3s ease-in-out; /* For smooth overall height adjustment */
+            /* gothic-card already has overflow: visible */
+        }
+
+        /* The toggle button is now positioned within the card, but sticking out */
+        #quick-access-toggle-btn {
+            background-color: var(--gold-glow);
+            color: #000;
+            border: 1px solid var(--gold-glow);
+            border-radius: 50%;
+            width: 40px; /* Increased size for mobile touch target */
+            height: 40px; /* Increased size for mobile touch target */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: absolute; /* Positioned relative to #global-quick-access-container */
+            top: -20px; /* Pull it up from the top edge by half its height to center it visually on the border */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 31; /* Ensure it's above other elements */
+            box-shadow: 0 0 10px var(--gold-glow);
+            transition: all 0.3s ease;
+        }
+
+        #quick-access-toggle-btn:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        #quick-access-toggle-btn i {
+            transition: transform 0.3s ease;
+        }
+        #global-quick-access-container.collapsed #quick-access-toggle-btn i {
+            transform: rotate(180deg); /* Rotate icon when collapsed */
+        }
+
+        /* This wrapper contains the actual quick access buttons and collapses */
+        #quick-access-content-wrapper {
+            width: 100%;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            overflow: hidden; /* Crucial for max-height animation to clip content */
+            padding-top: 0.5rem; /* Space below the toggle button visually */
+            padding-bottom: 0.5rem; /* Standard padding for content */
+        }
+
+        #global-quick-access-container.collapsed #quick-access-content-wrapper {
+            max-height: 0 !important; /* Collapse to 0 height, making content invisible and occupying no space */
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when collapsed */
+            padding-top: 0; /* Remove padding when fully collapsed */
+            padding-bottom: 0; /* Remove padding when fully collapsed */
+        }
+
+        /* Styling for Initiative and Proficiency when relocated */
+        .stat-relocated {
+            position: absolute;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-gold);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            z-index: 11; /* Ensure it's above the image */
+        }
+        #initiative-relocated {
+            right: 10px; /* Adjust as needed */
+            top: 10px; /* Adjust as needed */
+            color: var(--gold-glow);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        #proficiency-relocated {
+            right: 10px; /* Adjust as needed */
+            top: 90px; /* Position below initiative, adjust to avoid overlap */
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        #initiative-relocated .stat-label, #proficiency-relocated .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <input type="file" id="imageUpload" class="hidden" accept="image/*">
     <input type="file" id="wallpaperUpload" class="hidden" accept="image/*">
     <input type="file" id="spell-image-upload" class="hidden" accept="image/*">
+    <input type="file" id="importFileInput" class="hidden" accept="application/json">
+
 
     <div class="main-container space-y-6">
 
@@ -969,6 +1048,17 @@
                             <button class="level-btn !w-6 !h-6 !text-base" onclick="adjustLevel(1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                     </div>
+
+                    <!-- NOVO: Iniciativa e Proficiência Relocadas -->
+                    <div id="initiative-relocated" class="stat-relocated">
+                        <span class="stat-label">Iniciativa</span>
+                        <span id="initiative" class="block">+0</span>
+                    </div>
+                    <div id="proficiency-relocated" class="stat-relocated">
+                        <span class="stat-label">Proficiência</span>
+                        <span id="proficiencyBonusDisplay" class="block">+0</span>
+                    </div>
+
                 </div>
 
                 <!-- Barra de Atributos (abaixo da imagem e nível) -->
@@ -986,18 +1076,8 @@
                 </div>
 
                 <div class="col-span-full md:col-span-1 lg:col-span-1 space-y-6">
-                    <div id="initiative-proficiency-card" class="glowing-card"> <!-- Applied glowing-card -->
-                        <div class="combined-stats">
-                            <div class="stat-item">
-                                <span class="stat-label">Iniciativa</span>
-                                <span id="initiative" class="stat-value-large">+0</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Proficiência</span>
-                                <span id="proficiencyBonusDisplay" class="stat-value-small">+0</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- REMOVIDO: initiative-proficiency-card -->
+                    <!-- O conteúdo de Iniciativa e Proficiência foi movido para o card da imagem do personagem -->
 
                     <div class="gothic-card p-4">
                         <h3 class="text-xl text-center mb-3" style="color: var(--header-gold-text);">Testes de Morte</h3>
@@ -1067,20 +1147,30 @@
                         </div>
                         <p class="text-center text-sm opacity-80 mt-2">Descansos Curtos: <span id="short-rests-count">0</span> | Descansos Longos: <span id="long-rests-count">0</span></p>
                     </div>
+                    
+                    <!-- NOVO: Seção de Proficiências Adicionais Colapsável -->
+                    <div class="gothic-card p-4 space-y-4" id="proficienciesCard">
+                        <div class="flex justify-between items-center mb-3 cursor-pointer" onclick="toggleSectionVisibility('proficiencies', !characterData.theme.sectionVisibility.proficiencies)">
+                            <h3 class="text-xl" style="color: var(--header-gold-text);">Outras Proficiências</h3>
+                            <i id="proficiencies-toggle-icon" data-lucide="chevron-down" class="w-6 h-6 transform transition-transform"></i>
+                        </div>
+                        <div id="proficiencies-content" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">Armaduras</label>
+                                <textarea id="prof-armors" class="gothic-textarea text-base h-16" placeholder="Ex: Armadura Leve, Média"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">Armas</label>
+                                <textarea id="prof-weapons" class="gothic-textarea text-base h-16" placeholder="Ex: Simples, Marciais"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">Ferramentas</label>
+                                <textarea id="prof-tools" class="gothic-textarea text-base h-16" placeholder="Ex: Ferramentas de Ladrão"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="gothic-card p-4 space-y-4">
-                        <h3 class="text-xl text-center" style="color: var(--header-gold-text);">Outras Proficiências</h3>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">Armaduras</label>
-                            <textarea id="prof-armors" class="gothic-textarea text-base h-16" placeholder="Ex: Armadura Leve, Média"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">Armas</label>
-                            <textarea id="prof-weapons" class="gothic-textarea text-base h-16" placeholder="Ex: Simples, Marciais"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">Ferramentas</label>
-                            <textarea id="prof-tools" class="gothic-textarea text-base h-16" placeholder="Ex: Ferramentas de Ladrão"></textarea>
-                        </div>
                         <h3 class="text-xl text-center mt-6" style="color: var(--header-gold-text);">Sentidos Passivos</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="flex flex-col items-center gothic-card p-3">
@@ -1220,9 +1310,16 @@
                     <button class="gothic-btn text-base" onclick="openModal('vinculosModal')"><i data-lucide="heart-handshake" class="w-6 h-6"></i>Ver/Gerenciar Vínculos</button>
                 </div>
             </div>
+            
+            <!-- NOVO: Diário de Bordo Aprimorado -->
             <div class="gothic-card p-6 flex flex-col">
-                <h2 class="text-3xl text-center mb-5" style="color: var(--header-gold-text);">Diário de Bordo</h2>
-                <textarea id="journalContent" class="gothic-textarea w-full flex-grow text-base" style="min-height: 400px;"></textarea>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-3xl text-center flex-grow" style="color: var(--header-gold-text);">Diário de Bordo</h2>
+                    <button class="gothic-btn text-base" onclick="openJournalEntryModal(null)"><i data-lucide="plus" class="w-4 h-4"></i> Adicionar Entrada</button>
+                </div>
+                <div id="journalEntriesList" class="flex-grow overflow-y-auto space-y-3 pr-3">
+                    <!-- Entradas do diário serão renderizadas aqui -->
+                </div>
             </div>
         </div>
 
@@ -1279,19 +1376,41 @@
             </div>
         </div>
 
-        <!-- Global Quick Access Buttons (permanently visible) -->
-        <div class="gothic-card p-4 flex justify-around items-center mt-auto fixed bottom-4 left-1/2 -translate-x-1/2 z-30 w-[95%] max-w-[500px]">
-            <div class="action-button-group">
-                <button class="gothic-btn !p-4" onclick="switchTab('spellbook-tab')"><i data-lucide="book-open" class="w-6 h-6"></i></button>
-                <span class="action-button-name">Magias</span>
-            </div>
-            <div class="action-button-group">
-                <button class="gothic-btn !p-4" onclick="switchTab('inventory-tab')"><i data-lucide="backpack" class="w-6 h-6"></i></button>
-                <span class="action-button-name">Inventário</span>
-            </div>
-            <div class="action-button-group">
-                <button class="gothic-btn !p-4" onclick="switchTab('tools-tab')"><i data-lucide="dice-5" class="w-6 h-6"></i></button>
-                <span class="action-button-name">Ferramentas</span>
+        <!-- Global Quick Access Buttons Container -->
+        <div id="global-quick-access-container" class="gothic-card fixed bottom-4 left-1/2 -translate-x-1/2 z-30 w-[95%] max-w-[500px]">
+            <!-- Toggle button is now positioned absolute within this card, sticking out -->
+            <button id="quick-access-toggle-btn" class="gothic-btn !p-2 !w-10 !h-10 absolute top-0 left-1/2 -translate-x-1/2 z-31" onclick="toggleQuickAccessBar()">
+                <i data-lucide="chevron-up" class="w-6 h-6"></i>
+            </button>
+            
+            <!-- This wrapper contains the actual quick access buttons and collapses -->
+            <div id="quick-access-content-wrapper" class="w-full transition-all duration-300 ease-in-out overflow-hidden" style="max-height: 200px;"> 
+                <div class="quick-access-content flex justify-around items-center py-2 px-4">
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('character-tab')"><i data-lucide="user" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">Personagem</span>
+                    </div>
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('combat-tab')"><i data-lucide="swords" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">Combate</span>
+                    </div>
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('spellbook-tab')"><i data-lucide="book-open" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">Grimório</span>
+                    </div>
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('inventory-tab')"><i data-lucide="backpack" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">Inventário</span>
+                    </div>
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('history-tab')"><i data-lucide="book" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">História</span>
+                    </div>
+                    <div class="action-button-group">
+                        <button class="gothic-btn !p-4" onclick="switchTab('tools-tab')"><i data-lucide="wrench" class="w-6 h-6"></i></button>
+                        <span class="action-button-name">Ferramentas</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1350,8 +1469,17 @@
                         <input type="checkbox" id="toggle-section-musicPlayer" class="h-5 w-5 mr-2" style="accent-color: var(--gold-glow);" onchange="toggleSectionVisibility('musicPlayer', this.checked)">
                         <span class="text-base">Tocador de Músicas</span>
                     </label>
+                    <!-- NOVO: Checkbox para a seção de proficiências adicionais -->
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-section-proficiencies" class="h-5 w-5 mr-2" style="accent-color: var(--gold-glow);" onchange="toggleSectionVisibility('proficiencies', this.checked)">
+                        <span class="text-base">Seção de Proficiências</span>
+                    </label>
                 </div>
-
+                <h3 class="text-xl text-center mt-5" style="color: var(--header-gold-text);">Gerenciamento de Dados</h3>
+                <div class="space-y-2">
+                    <button class="gothic-btn w-full text-lg" onclick="exportCharacterData()"><i data-lucide="download" class="w-6 h-6"></i>Exportar Ficha</button>
+                    <button class="gothic-btn w-full text-lg" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload" class="w-6 h-6"></i>Importar Ficha</button>
+                </div>
             </div>
             <button class="gothic-btn mt-8 self-center text-lg" onclick="closeModal('settingsModal')">Fechar</button>
         </div>
@@ -1552,13 +1680,31 @@
         </div>
     </div>
 
-    <div id="journalModal" class="modal">
+    <!-- NOVO: Modal para Adicionar/Editar Entrada de Diário -->
+    <div id="journalEntryModal" class="modal">
         <div class="modal-content gothic-card p-6 flex flex-col">
-            <h2 class="text-3xl text-center mb-5" style="color: var(--header-gold-text);">Diário de Bordo</h2>
-            <textarea id="journalContent" class="gothic-textarea w-full flex-grow text-base" style="min-height: 400px;"></textarea>
-            <button class="gothic-btn mt-6 self-center text-lg" onclick="closeModal('journalModal')">Fechar</button>
+            <h2 id="journal-entry-modal-title" class="text-3xl text-center mb-5" style="color: var(--header-gold-text);">Nova Entrada de Diário</h2>
+            <div class="flex-grow overflow-y-auto pr-3 space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">Data</label>
+                    <input type="date" id="journal-entry-date" class="gothic-input text-base">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Título</label>
+                    <input type="text" id="journal-entry-title" class="gothic-input text-base" placeholder="Título da entrada...">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Conteúdo</label>
+                    <textarea id="journal-entry-content" class="gothic-textarea text-base h-48" placeholder="O que aconteceu hoje?"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-5 mt-5">
+                <button class="gothic-btn text-lg" onclick="closeModal('journalEntryModal')">Cancelar</button>
+                <button class="gothic-btn text-lg" onclick="saveJournalEntry()">Salvar Entrada</button>
+            </div>
         </div>
     </div>
+
 
     <div id="diceRollerModal" class="modal">
         <div class="modal-content !max-w-md gothic-card p-6 flex flex-col">
@@ -1769,6 +1915,7 @@
         let currentDetailItemId = null; // Usado para o item exibido no modal de detalhes
         let currentEditingAttackIndex = null; // Para edição de ataques
         let currentEditingResourceIndex = null; // NOVO: Para edição de recursos
+        let currentEditingJournalEntryId = null; // NOVO: Para edição de entradas de diário
         let currentInventoryListTab = 'equip';
         let tempSpellImage = null;
         let tempEditItemImage = null; // Para a imagem temporária no modal de edição de item
@@ -1917,7 +2064,9 @@
                 deathSaves: { successes: [false, false, false], failures: [false, false, false] },
                 attributes: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
                 savingThrows: {}, skills: {}, inventory: [], keyInventory: [], spells: [], spellSlots: {},
-                journal: '', rollHistory: [], vinculos: [], currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
+                journal: '', // Old single journal string - will be kept for potential migration from old saves, but not used by new UI
+                journalEntries: [], // NOVO: Array para entradas de diário individuais
+                rollHistory: [], vinculos: [], currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
                 theme: {
                     colors: {},
                     wallpaper: '',
@@ -1925,12 +2074,14 @@
                     flameGlowEnabled: true,
                     mode: 'radiant',
                     currentTab: 'character-tab', // NEW: Default active tab
+                    quickAccessCollapsed: true, // NOVO: Estado da barra de acesso rápido (começa colapsada)
                     sectionVisibility: { // NEW: To store visibility of major sections
                         attacks: true,
                         resources: true,
                         conditions: true,
                         personality: true,
-                        musicPlayer: false
+                        musicPlayer: false,
+                        proficiencies: true // NOVO: Default visibility for proficiencies
                     }
                 },
                 // Proficiências Adicionais
@@ -1991,6 +2142,7 @@
                 if (characterData.theme.musicPlayerEnabled === undefined) characterData.theme.musicPlayerEnabled = false;
                 if (characterData.theme.flameGlowEnabled === undefined) characterData.theme.flameGlowEnabled = true;
                 if (characterData.theme.mode === undefined) characterData.theme.mode = 'radiant';
+                if (characterData.theme.quickAccessCollapsed === undefined) characterData.theme.quickAccessCollapsed = true; // NOVO: Default to collapsed
 
                 // NOVO: Migração para currentTab
                 if (!characterData.theme.currentTab) characterData.theme.currentTab = 'character-tab';
@@ -2055,6 +2207,21 @@
                 if (!characterData.personality) {
                     characterData.personality = { traits: '', ideals: '', flaws: '', history: '', organizations: '' };
                 }
+                
+                // NOVO: Migração para Journal Entries
+                if (!characterData.journalEntries) {
+                    characterData.journalEntries = [];
+                    // Opcional: Se characterData.journal contiver dados antigos, você pode tentar migrá-los para uma entrada única
+                    // if (characterData.journal) {
+                    //     characterData.journalEntries.push({
+                    //         id: Date.now(),
+                    //         date: new Date().toISOString().split('T')[0],
+                    //         title: "Antigas Anotações de Diário",
+                    //         content: characterData.journal
+                    //     });
+                    //     characterData.journal = ''; // Limpa o campo antigo após a migração
+                    // }
+                }
 
                 // NOVO: Migração para Layout da Ficha
                 if (!characterData.theme.sectionVisibility) {
@@ -2063,7 +2230,8 @@
                         resources: true,
                         conditions: true,
                         personality: true,
-                        musicPlayer: characterData.theme.musicPlayerEnabled || false
+                        musicPlayer: characterData.theme.musicPlayerEnabled || false,
+                        proficiencies: true // Default to true for new sections
                     };
                     characterData.theme.sectionVisibility = defaultSectionVisibility;
                 } else {
@@ -2073,7 +2241,8 @@
                         resources: true,
                         conditions: true,
                         personality: true,
-                        musicPlayer: characterData.theme.musicPlayerEnabled || false
+                        musicPlayer: characterData.theme.musicPlayerEnabled || false,
+                        proficiencies: true // Ensure new sections are defaulted to true for existing users
                     };
                     for (const section in defaultSectionVisibility) {
                         if (characterData.theme.sectionVisibility[section] === undefined) {
@@ -2096,7 +2265,7 @@
             document.getElementById('hpCurrent').value = characterData.hp.current;
             document.getElementById('hpMax').value = characterData.hp.max;
             document.getElementById('hpTemp').value = characterData.hp.temp;
-            document.getElementById('journalContent').value = characterData.journal;
+            // REMOVIDO: journalContent.value, pois agora é um sistema de entradas
             
             const spellcastingAbilitySelect = document.getElementById('spellcasting-ability');
             if (spellcastingAbilitySelect) {
@@ -2135,31 +2304,50 @@
             renderVinculos();
             renderDeathSaves();
             renderRollHistory();
-            renderThemeSettings(); // Atualiza os checkboxes de layout
             renderAttacks(); // Renderiza os ataques
             renderResources(); // NOVO: Renderiza os recursos
             renderActiveConditions(); // NOVO: Renderiza as condições ativas
+            renderJournalEntries(); // NOVO: Renderiza as entradas de diário
             updateAllCalculations(); // Chamar aqui para garantir que os sentidos passivos sejam calculados
 
             // Set initial active tab and apply section visibility
             switchTab(characterData.theme.currentTab);
+            // After rendering all other sections, render theme settings to ensure checkboxes are present
+            renderThemeSettings(); // Call this BEFORE applying section visibility to ensure checkboxes exist
+
             for (const section in characterData.theme.sectionVisibility) {
-                // Ensure musicPlayer visibility is synced with its dedicated toggle
-                if (section === 'musicPlayer') {
-                    const musicPlayerToggleCheckbox = document.getElementById('toggle-section-musicPlayer');
-                    if (musicPlayerToggleCheckbox) {
-                        musicPlayerToggleCheckbox.checked = characterData.theme.sectionVisibility[section];
-                    }
-                    toggleMusicPlayerVisibility(characterData.theme.sectionVisibility[section], false); // Don't save again
-                } else {
-                    const checkbox = document.getElementById(`toggle-section-${section}`);
-                    if (checkbox) {
-                        checkbox.checked = characterData.theme.sectionVisibility[section];
-                    }
-                    toggleSectionVisibility(section, characterData.theme.sectionVisibility[section], false); // Don't save again
+                const checkbox = document.getElementById(`toggle-section-${section}`);
+                if (checkbox) {
+                    checkbox.checked = characterData.theme.sectionVisibility[section];
                 }
+                toggleSectionVisibility(section, characterData.theme.sectionVisibility[section], false); // Don't save again
             }
             updateCharImageDisplay(); // Initial call to set image and overlay state
+
+            // NOVO: Inicializa o estado da barra de acesso rápido
+            const quickAccessContainer = document.getElementById('global-quick-access-container');
+            const contentWrapper = document.getElementById('quick-access-content-wrapper');
+            const toggleBtnIcon = document.querySelector('#quick-access-toggle-btn i');
+
+            // Apply initial state based on saved data
+            if (characterData.theme.quickAccessCollapsed) {
+                quickAccessContainer.classList.add('collapsed');
+                contentWrapper.style.maxHeight = '0';
+                contentWrapper.style.opacity = 0;
+                contentWrapper.style.pointerEvents = 'none';
+                quickAccessContainer.style.paddingBottom = '0'; // Remove padding on initial load if collapsed
+            } else {
+                quickAccessContainer.classList.remove('collapsed');
+                // Calculate and set max-height for expanded state
+                contentWrapper.style.maxHeight = contentWrapper.scrollHeight + 'px';
+                contentWrapper.style.opacity = 1;
+                contentWrapper.style.pointerEvents = 'auto';
+                quickAccessContainer.style.paddingBottom = '0.5rem'; // Re-add padding on initial load if expanded
+            }
+            if (toggleBtnIcon) {
+                toggleBtnIcon.setAttribute('data-lucide', characterData.theme.quickAccessCollapsed ? 'chevron-down' : 'chevron-up');
+                lucide.createIcons();
+            }
         }
 
         // Debounced function for general UI data collection and calculation updates
@@ -2192,7 +2380,7 @@
             characterData.hp.current = parseInt(document.getElementById('hpCurrent').value) || 0;
             characterData.hp.max = parseInt(document.getElementById('hpMax').value) || 0;
             characterData.hp.temp = parseInt(document.getElementById('hpTemp').value) || 0;
-            characterData.journal = document.getElementById('journalContent').value;
+            // REMOVIDO: characterData.journal = document.getElementById('journalContent').value;
             
             const spellcastingAbilitySelect = document.getElementById('spellcasting-ability');
             if (spellcastingAbilitySelect) {
@@ -2414,7 +2602,7 @@
 
         // --- LISTENERS DE EVENTOS E CONFIGURAÇÃO INICIAL ---
         function setupEventListeners() {
-            document.querySelectorAll('#characterName, #characterClass, #characterRace, #hpCurrent, #hpMax, #hpTemp, #journalContent, #ac').forEach(el => {
+            document.querySelectorAll('#characterName, #characterClass, #characterRace, #hpCurrent, #hpMax, #hpTemp, #ac').forEach(el => {
                 el.addEventListener('input', debouncedCollectDataAndRecalculate);
             });
             // NOVO: Listeners para Personalidade e Antecedentes
@@ -2493,6 +2681,8 @@
             document.getElementById('prof-weapons').addEventListener('input', (e) => debouncedUpdateProficiencies('weapons', e.target.value));
             document.getElementById('prof-tools').addEventListener('input', (e) => debouncedUpdateProficiencies('tools', e.target.value));
 
+            // NOVO: Listener para importação de arquivo
+            document.getElementById('importFileInput').addEventListener('change', handleImportCharacterData);
         }
 
         window.onload = () => { loadData(); populateUIFromData(); setupEventListeners(); lucide.createIcons(); };
@@ -2605,7 +2795,7 @@
             const input = document.getElementById('attribute-modal-input');
             const modifierSpan = document.getElementById('attribute-modal-modifier');
             input.value = score;
-            modifierSpan.textContent = calculateModifier(newScore) >= 0 ? `+${calculateModifier(newScore)}` : calculateModifier(newScore);
+            modifierSpan.textContent = calculateModifier(score) >= 0 ? `+${calculateModifier(score)}` : calculateModifier(score);
             
             // Listener for direct input in the modal (if user types)
             input.oninput = () => {
@@ -2868,7 +3058,7 @@
                     <div class="inventory-item-card" data-item-id="${itemToSave.id}" onclick="openItemDetailModal(${itemToSave.id})">
                         <button class="delete-item-btn" onclick="event.stopPropagation(); removeInventoryItem(${itemToSave.id})">X</button>
                         <img src="${itemToSave.image}" alt="${itemToSave.name}" onerror="this.src='${defaultImagePlaceholder}'">
-                        <span class="item-name">${item.isSingle ? 'Único' : `Qtd: ${item.qty}`}</span>
+                        <span class="item-name">${itemToSave.isSingle ? 'Único' : `Qtd: ${itemToSave.qty}`}</span>
                     </div>
                 `;
                 list.insertAdjacentHTML('afterbegin', newItemHtml);
@@ -3301,6 +3491,7 @@
         // NOVO: Função para alternar visibilidade das seções da ficha
         function toggleSectionVisibility(sectionId, isVisible, save = true) {
             let cardElement;
+            let toggleIcon;
             switch (sectionId) {
                 case 'attacks':
                     cardElement = document.getElementById('attacksCard');
@@ -3315,14 +3506,22 @@
                     cardElement = document.getElementById('personalityCard');
                     break;
                 case 'musicPlayer':
-                    // This case is handled by toggleMusicPlayerVisibility for direct control and UI sync
                     toggleMusicPlayerVisibility(isVisible, save);
                     return; // Exit to avoid re-saving and duplicate logic
+                // NOVO: Case for proficiencies
+                case 'proficiencies':
+                    cardElement = document.getElementById('proficiencies-content');
+                    toggleIcon = document.getElementById('proficiencies-toggle-icon');
+                    break;
                 default:
                     return;
             }
             if (cardElement) {
                 cardElement.style.display = isVisible ? 'block' : 'none';
+                if (toggleIcon) {
+                    toggleIcon.setAttribute('data-lucide', isVisible ? 'chevron-up' : 'chevron-down');
+                    lucide.createIcons(); // Re-render icon
+                }
                 if (save) {
                     characterData.theme.sectionVisibility[sectionId] = isVisible;
                     saveData();
@@ -3881,6 +4080,170 @@
                 });
             }
             lucide.createIcons();
+        }
+
+        // NOVO: Funções para o Diário de Bordo Aprimorado
+        function renderJournalEntries() {
+            const listContainer = document.getElementById('journalEntriesList');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = ''; // Limpa a lista antes de renderizar
+
+            if (characterData.journalEntries.length === 0) {
+                listContainer.innerHTML = '<p class="opacity-70 italic text-center">Nenhuma entrada de diário adicionada ainda.</p>';
+            } else {
+                // Ordena por data mais recente primeiro
+                const sortedEntries = [...characterData.journalEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedEntries.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.className = 'gothic-card p-3 flex justify-between items-center cursor-pointer';
+                    entryDiv.innerHTML = `
+                        <div>
+                            <p class="text-sm opacity-80">${entry.date}</p>
+                            <h4 class="text-lg font-bold">${entry.title || 'Sem Título'}</h4>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="gothic-btn text-xs py-1 px-2" onclick="event.stopPropagation(); openJournalEntryModal('${entry.id}')">Editar</button>
+                            <button class="gothic-btn text-xs py-1 px-2 !border-red-500 !text-red-500 hover:!bg-red-500 hover:!text-black" onclick="event.stopPropagation(); deleteJournalEntry('${entry.id}')">X</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(entryDiv);
+                });
+            }
+        }
+
+        function openJournalEntryModal(entryId = null) {
+            currentEditingJournalEntryId = entryId;
+            const dateInput = document.getElementById('journal-entry-date');
+            const titleInput = document.getElementById('journal-entry-title');
+            const contentTextarea = document.getElementById('journal-entry-content');
+            const modalTitle = document.getElementById('journal-entry-modal-title');
+
+            if (entryId !== null) {
+                const entry = characterData.journalEntries.find(e => e.id == entryId);
+                if (!entry) return;
+                modalTitle.textContent = 'Editar Entrada de Diário';
+                dateInput.value = entry.date;
+                titleInput.value = entry.title;
+                contentTextarea.value = entry.content;
+            } else {
+                modalTitle.textContent = 'Nova Entrada de Diário';
+                dateInput.value = new Date().toISOString().split('T')[0]; // Data atual
+                titleInput.value = '';
+                contentTextarea.value = '';
+            }
+            openModal('journalEntryModal');
+        }
+
+        function saveJournalEntry() {
+            const date = document.getElementById('journal-entry-date').value;
+            const title = document.getElementById('journal-entry-title').value;
+            const content = document.getElementById('journal-entry-content').value;
+
+            if (!date || !title) {
+                showMessage("Data e Título são obrigatórios para a entrada de diário.", 3000);
+                return;
+            }
+
+            const entryToSave = {
+                id: currentEditingJournalEntryId || Date.now(),
+                date,
+                title,
+                content
+            };
+
+            if (currentEditingJournalEntryId !== null) {
+                const index = characterData.journalEntries.findIndex(e => e.id == currentEditingJournalEntryId);
+                if (index !== -1) {
+                    characterData.journalEntries[index] = entryToSave; 
+                }
+            } else {
+                characterData.journalEntries.push(entryToSave);
+            }
+            saveData();
+            renderJournalEntries();
+            closeModal('journalEntryModal');
+            showMessage("Entrada de diário salva!", 2000);
+        }
+
+        function deleteJournalEntry(entryId) {
+            characterData.journalEntries = characterData.journalEntries.filter(e => e.id != entryId);
+            saveData();
+            renderJournalEntries();
+            showMessage("Entrada de diário removida.", 2000);
+        }
+
+        // NOVO: Funções para Exportar/Importar Ficha
+        function exportCharacterData() {
+            const dataStr = JSON.stringify(characterData, null, 2); // beautify JSON
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ficha_${characterData.name || 'personagem'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage("Ficha exportada com sucesso!", 3000);
+        }
+
+        function handleImportCharacterData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    // Basic validation to ensure it's a character data object
+                    if (importedData && typeof importedData === 'object' && importedData.attributes && importedData.hp) {
+                        if (confirm('Importar esta ficha substituirá os dados atuais. Deseja continuar?')) {
+                            characterData = importedData;
+                            // Ensure all new fields are present after import for compatibility
+                            loadData(); // This will apply migrations to imported data
+                            populateUIFromData();
+                            saveData();
+                            showMessage("Ficha importada com sucesso!", 3000);
+                        }
+                    } else {
+                        showMessage("Arquivo JSON inválido para ficha de personagem.", 3000);
+                    }
+                } catch (error) {
+                    console.error("Erro ao importar ficha:", error);
+                    showMessage("Erro ao ler o arquivo. Certifique-se de que é um JSON válido.", 3000);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // NOVO: Função para o toggle da barra de acesso rápido
+        function toggleQuickAccessBar() {
+            const quickAccessContainer = document.getElementById('global-quick-access-container');
+            const contentWrapper = document.getElementById('quick-access-content-wrapper');
+            const toggleBtnIcon = document.querySelector('#quick-access-toggle-btn i');
+            
+            const isCollapsed = quickAccessContainer.classList.toggle('collapsed');
+            characterData.theme.quickAccessCollapsed = isCollapsed;
+            saveData();
+
+            if (isCollapsed) {
+                contentWrapper.style.maxHeight = '0';
+                contentWrapper.style.opacity = 0;
+                contentWrapper.style.pointerEvents = 'none';
+                quickAccessContainer.style.paddingBottom = '0'; // Remove padding when collapsed
+            } else {
+                contentWrapper.style.maxHeight = contentWrapper.scrollHeight + 'px'; // Set to natural height
+                contentWrapper.style.opacity = 1;
+                contentWrapper.style.pointerEvents = 'auto';
+                quickAccessContainer.style.paddingBottom = '0.5rem'; // Re-add padding when expanded
+            }
+
+            if (toggleBtnIcon) {
+                toggleBtnIcon.setAttribute('data-lucide', isCollapsed ? 'chevron-down' : 'chevron-up');
+                lucide.createIcons();
+            }
         }
     </script>
 </body>
